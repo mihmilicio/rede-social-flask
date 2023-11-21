@@ -104,6 +104,8 @@ def profile(user_id):
 
   _user = User.query.get(int(user_id))
   users = User.query.all()
+  users.remove(current_user)
+  users.insert(0, current_user)
 
   if int(user_id) == int(current_user.id):
     return render_template("home.html", users=users, user=_user, form=_formNewPost, posts=_user.posts)

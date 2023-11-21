@@ -6,7 +6,10 @@
     <div class="col-3">
       <div class="btn-group-vertical w-100">
         {% for _user in users %}
-          <a class="btn text-start {{'btn-primary' if user.id == _user.id else 'btn-light'}}" href="{{ url_for('profile', user_id=_user.id) }}">@ {{_user.username}}</a>
+          <a 
+            class="btn text-start {{'btn-primary' if user.id == _user.id else 'btn-light'}}" 
+            href="{{ url_for('profile', user_id=_user.id) }}"
+          >@ {{_user.username}} {{ '(eu)' if _user.id == current_user.id }}</a>
         {% endfor %}
       </div>
     </div>
