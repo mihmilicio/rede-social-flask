@@ -1,9 +1,9 @@
 {% extends "base.html" %} 
 {% block title %} Home {% endblock %}
 {% block body %}
-<div class="container-lg">
-  <div class="row">
-    <div class="col-3">
+<div class="container-lg" style="width: 1000px; flex: 1; overflow: hidden;">
+  <div class="row h-100 justify-content-center">
+    <div class="col-3 overflow-auto h-100">
       <div class="btn-group-vertical w-100">
         {% for _user in users %}
           <a 
@@ -13,9 +13,9 @@
         {% endfor %}
       </div>
     </div>
-    <div class="col-9">
+    <div class="col-8 overflow-auto h-100">
       {% if user.id == current_user.id or user == None %}
-      <div class="card">
+      <div class="card mb-3">
         <div class="card-body">
           <form method="post" enctype="multipart/form-data">
             {{ form.csrf_token }}
@@ -38,8 +38,27 @@
       </div>
       {% endif %}
 
-      posts:
-      {{ posts }}
+      {% for _post in posts %}
+        <div class="posts my-5">
+            <div class="card mb-3">
+              <img src="/{{ _post.post_img }}" class="card-img-top object-fit-contain" style="aspect-ratio: 1/1;">
+              <div class="card-body">
+                <h5 class="card-title">@{{ _post.username }}</h5>
+                <p class="card-text">{{ _post.post_text }}</p>
+              </div>
+              <div class="card-footer text-body-secondary">
+                {{ _post.creation_date }}
+              </div>
+            </div>
+        </div>
+      {% endfor %}
+
+      {% if not posts %}
+        <div class="alert alert-warning" role="alert">
+          <strong>Oops!</strong>
+          There's no posts to check out right now....
+        </div>
+      {% endif %}
     </div>
   </div>
 </div>
