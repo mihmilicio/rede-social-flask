@@ -1,27 +1,33 @@
-{% extends "base.html" %}
-
-{% block title %}
-    Register to PhotoNook
-{% endblock %}
-
+{% extends "base.html" %} 
+{% block title %} Register to PhotoNook {% endblock %}
 {% block body %}
-<p>register works!</p>
-    <!-- <form method="POST">
-        {{ form.csrf_token }}
+<div class="container-sm" style="width: 600px;">
+  <div class="row">
+    <form method="POST" class="col d-flex flex-column">
+      {{ form.csrf_token }} 
 
-        {{ form.email.label() }}
-        {{ form.email() }}
+      <div class="mb-3">
+        <label for="email" class="form-label">{{ form.email.label() }}</label>
+        {{ form.email(class_="form-control") }}
+      </div>
 
-        {{ form.username.label() }}
-        {{ form.username() }}
+      <div class="mb-3">
+        <label for="username" class="form-label">{{ form.username.label() }}</label>
+        {{ form.username(class_="form-control") }}
+      </div>
 
-        {{ form.password.label() }}
-        {{ form.password() }}
+      <div class="mb-3">
+        <label for="password" class="form-label">{{ form.password.label() }}</label>
+        {{ form.password(class_="form-control") }}
+      </div>
 
-        {{ form.checkPassword.label() }}
-        {{ form.checkPassword() }}
+      <div class="mb-3">
+        <label for="checkPassword" class="form-label">{{ form.checkPassword.label() }}</label>
+        {{ form.checkPassword(class_="form-control") }}
+      </div>
 
-        {{ form.btn() }}
-
-    </form> -->
+      {{ form.btn(class_="btn btn-primary mt-3") }}
+    </form>
+  </div>
+</div>
 {% endblock %}

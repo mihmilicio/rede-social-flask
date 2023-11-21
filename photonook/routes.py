@@ -10,7 +10,7 @@ from photonook import bcrypt
 
 
 @app.route('/register', methods=['POST', 'GET'])
-def create_account():
+def register():
     formRegister = FormRegister()
 
     if formRegister.validate_on_submit():
