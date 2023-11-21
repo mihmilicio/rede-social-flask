@@ -13,10 +13,10 @@ class User(database.Model, UserMixin):
     username = database.Column(database.String, nullable=False, unique=True)
     email = database.Column(database.String, nullable=False, unique=True)
     password = database.Column(database.String, nullable=False)
-    posts = database.relationship("Posts", backref='user', lazy=True)
+    posts = database.relationship("Post", backref='user', lazy=True)
 
 
-class Posts(database.Model):
+class Post(database.Model):
     id = database.Column(database.Integer, primary_key=True)
     post_text = database.Column(database.String, default='')
     post_img = database.Column(database.String, default='default.png')

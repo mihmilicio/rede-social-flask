@@ -1,3 +1,6 @@
 env_social
 **/__pycache__
 *.db
+
+photonook/static/posts/*
+!photonook/static/posts/.file

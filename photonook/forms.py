@@ -21,3 +21,8 @@ class FormRegister(FlaskForm):
         email_of_user = User.query.filter_by(email=email.data).first()
         if email_of_user:
             return ValidationError('~ email already exists ~')
+
+class FormCreateNewPost(FlaskForm):
+    text = StringField('Post Text', widget=TextArea(), validators=[DataRequired()])
+    photo = FileField('Photo', validators=[DataRequired()])
+    btn = SubmitField('Publish')
