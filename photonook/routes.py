@@ -5,7 +5,7 @@ from flask_login import login_user
 
 from photonook.models import User
 from photonook import app, database
-from photonook.forms import FormRegister
+from photonook.forms import FormLogin, FormRegister
 from photonook import bcrypt
 
 
@@ -27,3 +27,16 @@ def register():
         return redirect(url_for('home'))
 
     return render_template("register.html", form=formRegister)
+
+@app.route('/login', methods=['POST', 'GET'])
+def login():
+    formLogin = FormLogin()
+
+    if formLogin.validate_on_submit():
+        userToLogin = User.query.filter_by(email=formLogin.email.data).first()
+        if userToLogin and bcrypt.check_password_hash(userToLogin.password, formLogin.password.data):
+            login_user(userToLogin)
+            return redirect(url_for('home'))
+
+
+    return render_template("login.html", form=formLogin)

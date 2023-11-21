@@ -5,6 +5,10 @@ from wtforms.widgets import TextArea
 
 from photonook.models import User
 
+class FormLogin(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    btn = SubmitField('Login')
 
 class FormRegister(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])

@@ -1,0 +1,23 @@
+{% extends "base.html" %} 
+{% block title %} Login to PhotoNook {% endblock %}
+{% block body %}
+<div class="container-sm" style="width: 600px;">
+  <div class="row">
+    <form method="POST" class="col d-flex flex-column">
+      {{ form.csrf_token }} 
+
+      <div class="mb-3">
+        <label for="email" class="form-label">{{ form.email.label() }}</label>
+        {{ form.email(class_="form-control") }}
+      </div>
+
+      <div class="mb-3">
+        <label for="password" class="form-label">{{ form.password.label() }}</label>
+        {{ form.password(class_="form-control") }}
+      </div>
+
+      {{ form.btn(class_="btn btn-primary mt-3") }}
+    </form>
+  </div>
+</div>
+{% endblock %}
