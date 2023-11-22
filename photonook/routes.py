@@ -84,13 +84,11 @@ def home():
   new_posts = []
 
   for post in posts:
-    liked = PostLike.query.get((current_user.id, post.id))
-
     new_post = post
     new_post.post_img = os.path.join(app.config['UPLOAD_FOLDER'], post.post_img).replace("\\","/")
     new_post.creation_date = datetime.strptime(post.creation_date, '%Y-%m-%d %H:%M:%S.%f').strftime("%d/%m/%Y at %H:%M")
     new_post.user = User.query.get(int(post.user_id))
-    new_post.liked = bool(liked)
+    new_post.liked = bool(PostLike.query.get((current_user.id, post.id)))
     new_post.like_count = len(post.likes)
     new_posts.append(new_post)
 
@@ -136,7 +134,9 @@ def profile(user_id):
     new_post = post
     new_post.post_img = os.path.join(app.config['UPLOAD_FOLDER'], post.post_img).replace("\\","/")
     new_post.creation_date = datetime.strptime(post.creation_date, '%Y-%m-%d %H:%M:%S.%f').strftime("%d/%m/%Y at %H:%M")
-    new_post.username = _user.username
+    new_post.user = User.query.get(int(post.user_id))
+    new_post.liked = bool(PostLike.query.get((current_user.id, post.id)))
+    new_post.like_count = len(post.likes)
     new_posts.append(new_post)
   
   if int(user_id) == int(current_user.id):
