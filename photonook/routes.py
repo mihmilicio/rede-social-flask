@@ -1,11 +1,11 @@
 import os
 
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, session, request, jsonify
 from flask_login import login_required, login_user, logout_user, current_user
 from werkzeug.utils import secure_filename
 from datetime import datetime, date
 
-from photonook.models import User, Post
+from photonook.models import User, Post, PostLike
 from photonook import app, database
 from photonook.forms import FormLogin, FormRegister, FormCreateNewPost
 from photonook import bcrypt
@@ -84,10 +84,14 @@ def home():
   new_posts = []
 
   for post in posts:
+    liked = PostLike.query.get((current_user.id, post.id))
+
     new_post = post
     new_post.post_img = os.path.join(app.config['UPLOAD_FOLDER'], post.post_img).replace("\\","/")
     new_post.creation_date = datetime.strptime(post.creation_date, '%Y-%m-%d %H:%M:%S.%f').strftime("%d/%m/%Y at %H:%M")
-    new_post.username = User.query.get(int(post.user_id)).username
+    new_post.user = User.query.get(int(post.user_id))
+    new_post.liked = bool(liked)
+    new_post.like_count = len(post.likes)
     new_posts.append(new_post)
 
   return render_template("home.html", users=users, user=None, form=_formNewPost, posts=new_posts)
@@ -139,3 +143,20 @@ def profile(user_id):
     return render_template("home.html", users=users, user=_user, form=_formNewPost, posts=posts)
   
   return render_template("home.html", users=users, user=_user, form=None, posts=_user.posts)
+
+@app.route('/like/<post_id>', methods=['PATCH'])
+@login_required
+def like(post_id):
+  post = Post.query.get(post_id)
+  liked = PostLike.query.get((current_user.id, post_id))
+
+  if liked:
+    PostLike.query.delete
+    database.session.delete(liked)
+  else:
+    postLike = PostLike(post_id=post_id, user_id=current_user.id)
+    database.session.add(postLike)
+    
+  database.session.commit()
+
+  return jsonify({"likes": len(post.likes), "liked": bool(not liked)})

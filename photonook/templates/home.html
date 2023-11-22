@@ -1,9 +1,11 @@
 {% extends "base.html" %} 
+
 {% block title %} Home {% endblock %}
+
 {% block body %}
 <div class="container-lg" style="width: 1000px; flex: 1; overflow: hidden;">
   <div class="row h-100 justify-content-center">
-    <div class="col-3 overflow-auto h-100">
+    <div class="col-3 overflow-auto h-100 pt-4">
       <div class="btn-group-vertical w-100">
         {% for _user in users %}
           <a 
@@ -13,45 +15,62 @@
         {% endfor %}
       </div>
     </div>
-    <div class="col-8 overflow-auto h-100">
+    <div class="col-8 overflow-auto h-100 pt-4">
       {% if user.id == current_user.id or user == None %}
-      <div class="card mb-3">
-        <div class="card-body">
-          <form method="post" enctype="multipart/form-data">
-            {{ form.csrf_token }}
+        <div class="card mb-3">
+          <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+              {{ form.csrf_token }}
 
-            <div class="mb-3">
-              <label for="photo" class="form-label">{{ form.photo.label() }}</label>
-              {{ form.photo(class_="form-control") }}
-            </div>
+              <div class="mb-3">
+                <label for="photo" class="form-label">{{ form.photo.label() }}</label>
+                {{ form.photo(class_="form-control") }}
+              </div>
 
-            <div class="mb-3">
-              <label for="text" class="form-label">{{ form.text.label() }}</label>
-              {{ form.text(class_="form-control") }}
-            </div>
+              <div class="mb-3">
+                <label for="text" class="form-label">{{ form.text.label() }}</label>
+                {{ form.text(class_="form-control") }}
+              </div>
 
-            <div class="d-flex justify-content-end">
-              {{ form.btn(class_="btn btn-primary") }}
-            </div>
-        </form>
+              <div class="d-flex justify-content-end">
+                {{ form.btn(class_="btn btn-primary") }}
+              </div>
+          </form>
+          </div>
         </div>
-      </div>
       {% endif %}
 
-      {% for _post in posts %}
+      {% if posts %}
         <div class="posts my-5">
+          {% for _post in posts %}
             <div class="card mb-3">
               <img src="/{{ _post.post_img }}" class="card-img-top object-fit-contain" style="aspect-ratio: 1/1;">
               <div class="card-body">
-                <h5 class="card-title">@{{ _post.username }}</h5>
-                <p class="card-text">{{ _post.post_text }}</p>
+                <h5 class="card-title">
+                  <!-- <form action="{{ url_for('like', post_id=_post.id, url='/home') }}" method="patch"> -->
+                    <button
+                      class="btn btn-lg p-0 {{ 'text-danger' if _post.liked }}"
+                      type="button"
+                      id="like-button-{{_post.id}}"
+                      onclick="like({{ _post.id }})"
+                    >
+                      <i class="bi {{ 'bi-heart-fill' if _post.liked else 'bi-heart'}}"></i>
+                      <span>{{_post.like_count}}</span>
+                    </button>
+                </h5>
+                <p class="card-text">
+                  <a href="{{ url_for('profile', user_id=_post.user.id) }}" class="link-dark link-offset-2 link-underline-opacity-0"><b>@{{ _post.user.username }}</b></a>
+                  {{ _post.post_text }}
+                </p>
               </div>
               <div class="card-footer text-body-secondary">
                 {{ _post.creation_date }}
               </div>
             </div>
+          {% endfor %}
         </div>
-      {% endfor %}
+      {% endif %}
+      
 
       {% if not posts %}
         <div class="alert alert-warning" role="alert">
