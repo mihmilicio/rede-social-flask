@@ -1,7 +1,7 @@
 {% extends "base.html" %} 
 {% block title %} Login to PhotoNook {% endblock %}
 {% block body %}
-<div class="container-sm" style="width: 600px;">
+<div class="container-sm pt-4" style="width: 600px;">
   <div class="row">
     <form method="POST" class="col d-flex flex-column">
       {{ form.csrf_token }} 
@@ -17,6 +17,8 @@
       </div>
 
       {{ form.btn(class_="btn btn-primary mt-3") }}
+
+      <a href="{{ url_for('register') }}" class="btn btn-link">or create your account</a>
     </form>
   </div>
 </div>

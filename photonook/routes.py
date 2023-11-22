@@ -10,6 +10,9 @@ from photonook import app, database
 from photonook.forms import FormLogin, FormRegister, FormCreateNewPost
 from photonook import bcrypt
 
+@app.errorhandler(401)
+def page_not_found(e):
+    return redirect(url_for('login'))
 
 @app.route('/register', methods=['POST', 'GET'])
 def register():
