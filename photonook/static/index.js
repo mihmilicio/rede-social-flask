@@ -18,3 +18,32 @@ function like(postId) {
       alert("Could not like post.")
     });
 }
+
+function comment(postId, input) {
+  const commentBlock = document.getElementById(`comment-block-${postId}`);
+  const text = input.value;
+
+  fetch(`/comment/${postId}`, { method: "POST", body: JSON.stringify({ text }) })
+    .then((res) => res.json())
+    .then((data) => {
+      input.value = "";
+
+      const newComment = commentBlock.cloneNode(true);
+      newComment.className = "mb-1 d-block"
+      newComment.removeAttribute('id');
+
+      //<a>
+      newComment.children[0].href = "/profile/" + data["user_id"];
+      newComment.children[0].children[0].innerHTML = "@" + data["user_username"];
+
+      // <span>
+      newComment.children[1].innerHTML = data["comment_text"];
+
+      const parentElement = commentBlock.parentElement;
+      parentElement.insertBefore(newComment, parentElement.lastElementChild);
+    })
+    .catch((e) => {
+      console.log(e)
+      alert("Could not comment post.")
+    });
+}

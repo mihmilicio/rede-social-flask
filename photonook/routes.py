@@ -1,11 +1,11 @@
 import os
 
-from flask import render_template, redirect, url_for, session, request, jsonify
+from flask import render_template, redirect, url_for, request, jsonify
 from flask_login import login_required, login_user, logout_user, current_user
 from werkzeug.utils import secure_filename
-from datetime import datetime, date
+from datetime import datetime
 
-from photonook.models import User, Post, PostLike
+from photonook.models import User, Post, PostLike, PostComment
 from photonook import app, database
 from photonook.forms import FormLogin, FormRegister, FormCreateNewPost
 from photonook import bcrypt
@@ -95,6 +95,9 @@ def home():
     new_post.like_count = len(post.likes)
     new_posts.append(new_post)
 
+    for comment in post.comments:
+      comment.username = User.query.get(int(comment.user_id)).username
+
   return render_template("home.html", users=users, user=None, form=_formNewPost, posts=new_posts)
 
 
@@ -141,6 +144,9 @@ def profile(user_id):
     new_post.liked = bool(PostLike.query.get((current_user.id, post.id)))
     new_post.like_count = len(post.likes)
     new_posts.append(new_post)
+
+  for comment in post.comments:
+    comment.username = User.query.get(int(comment.user_id)).username   
   
   if int(user_id) == int(current_user.id):
     return render_template("home.html", users=users, user=_user, form=_formNewPost, posts=posts)
@@ -163,3 +169,16 @@ def like(post_id):
   database.session.commit()
 
   return jsonify({"likes": len(post.likes), "liked": bool(not liked)})
+
+@app.route('/comment/<post_id>', methods=['POST'])
+@login_required
+def comment(post_id):
+  body = request.get_json(force=True)
+
+  postComment = PostComment(text=body.get("text"),
+                            user_id=current_user.id,
+                            post_id = post_id)
+  database.session.add(postComment)
+  database.session.commit()
+
+  return jsonify({"comment_text": postComment.text, "user_id": current_user.id, "user_username": current_user.username})

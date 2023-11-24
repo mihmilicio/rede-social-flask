@@ -57,10 +57,38 @@
                       <span>{{_post.like_count}}</span>
                     </button>
                 </h5>
-                <p class="card-text">
-                  <a href="{{ url_for('profile', user_id=_post.user.id) }}" class="link-dark link-offset-2 link-underline-opacity-0"><b>@{{ _post.user.username }}</b></a>
-                  {{ _post.post_text }}
-                </p>
+                <div class="card-text">
+                  <p class="mb-2">
+                    <a href="{{ url_for('profile', user_id=_post.user.id) }}" class="link-dark link-offset-2 link-underline-opacity-0"><b>@{{ _post.user.username }}</b></a>
+                    {{ _post.post_text }}
+                  </p>
+
+                  <small class="mb-1 d-none" id="comment-block-{{_post.id}}">
+                    <a href="#" class="link-dark link-offset-2 link-underline-opacity-0"><b>@username</b></a>
+                    <span>text</span>
+                  </small>
+
+                  {% for _comment in _post.comments %}
+                    <small class="mb-1 d-block">
+                      <a href="{{ url_for('profile', user_id=_comment.user_id) }}" class="link-dark link-offset-2 link-underline-opacity-0"><b>@{{_comment.username}}</b></a>
+                      <span>{{ _comment.text }}</span>
+                    </small>
+                  {% endfor %}
+                  <div class="input-group">
+                    <input 
+                      type="text" 
+                      class="form-control form-control-sm" 
+                      placeholder="Type your comment..."
+                      id="input-comment-{{_post.id}}" />
+
+                    <button 
+                      class="btn btn-sm btn-outline-primary" 
+                      type="button" 
+                      id="btn-send-comment-{{_post.id}}"
+                      onclick="comment({{_post.id}}, this.parentElement.children[0])"
+                    >Publish</button>
+                  </div>
+                </div>
               </div>
               <div class="card-footer text-body-secondary">
                 {{ _post.creation_date }}
